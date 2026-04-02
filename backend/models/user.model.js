@@ -23,12 +23,18 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["User", "Admin"],
-      default: "User",
+      enum: ["user", "admin"],
+      default: "user",
     },
     userImage: {
-      type: String,
-      default: "",
+      public_id: {
+        type: String,
+        default: ""
+      },
+      url: {
+        type: String,
+        default: ""
+      }
     },
     isVerified: {
       type: Boolean,
@@ -53,7 +59,6 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 })
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
